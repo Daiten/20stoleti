@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historie 20. století</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Courier+Prime:wght@400;700&family=Source+Serif+4:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Tokens ─────────────────────────────────────────────── */
+    :root {
+      --bg:        #f6f1e9;
+      --linen:     #ede8de;
+      --card:      #fffefb;
+      --navy:      #1a2744;
+      --crimson:   #8b1c1c;
+      --gold:      #b8922a;
+      --ink:       #1c1812;
+      --muted:     #7a6e60;
+      --line-w:    3px;
+      --dot-r:     10px;
+      --col:       clamp(280px, 38vw, 480px);
+      --gap:       clamp(32px, 4vw, 64px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Page ───────────────────────────────────────────────── */
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─────────────────────────────────────────────── */
+    header {
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+      padding: clamp(40px, 6vw, 80px) 24px clamp(32px, 5vw, 60px);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,.03) 28px,
+        rgba(255,255,255,.03) 29px
+      );
+      pointer-events: none;
+    }
+    .header-eyebrow {
+      font-family: 'Courier Prime', monospace;
+      font-size: .78rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      color: #fff;
+    }
+    .header-rule {
+      width: 48px;
+      height: 2px;
+      background: var(--crimson);
+      margin: 22px auto 18px;
+    }
+    .header-sub {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: clamp(.9rem, 1.4vw, 1.05rem);
+      color: rgba(255,255,255,.55);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ─── Timeline wrapper ───────────────────────────────────── */
+    .timeline {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 24px 100px;
+    }
+
+    /* Central spine */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: var(--line-w);
+      background: linear-gradient(to bottom, transparent, var(--crimson) 60px, var(--crimson) calc(100% - 60px), transparent);
+    }
+
+    /* ─── Decade banner ──────────────────────────────────────── */
+    .decade {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 56px 0 48px;
+    }
+    .decade-inner {
+      background: var(--navy);
+      color: #fff;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 10px 36px 10px 28px;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+    }
+    .decade-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .decade-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+    }
+
+    /* ─── Event row ──────────────────────────────────────────── */
+    .event {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr var(--gap) 1fr;
+      align-items: start;
+      margin-bottom: 40px;
+    }
+
+    /* Central dot on the spine */
+    .event::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 22px;
+      transform: translate(-50%, -50%);
+      width: calc(var(--dot-r) * 2);
+      height: calc(var(--dot-r) * 2);
+      border-radius: 50%;
+      background: var(--card);
+      border: var(--line-w) solid var(--crimson);
+      z-index: 2;
+      transition: background .2s, transform .2s;
+    }
+
+    /* Connector line from card to dot */
+    .event-connector {
+      position: absolute;
+      top: 22px;
+      height: 2px;
+      background: var(--linen);
+      z-index: 1;
+      width: calc(var(--gap) / 2 + var(--dot-r));
+    }
+
+    /* Left-side events */
+    .event.left .event-card  { grid-column: 1; text-align: right; }
+    .event.left .event-blank { grid-column: 3; }
+    .event.left .event-connector {
+      right: calc(50% - var(--gap) / 2 + 1px);
+      left: auto;
+    }
+
+    /* Right-side events */
+    .event.right .event-card  { grid-column: 3; text-align: left; }
+    .event.right .event-blank { grid-column: 1; }
+    .event.right .event-connector {
+      left: calc(50% - var(--gap) / 2 + 1px);
+    }
+
+    /* ─── Card ───────────────────────────────────────────────── */
+    .event-card {
+      background: var(--card);
+      border: 1px solid var(--linen);
+      border-radius: 2px;
+      padding: 18px 22px 16px;
+      box-shadow: 0 2px 8px rgba(26,23,18,.06);
+      transition: box-shadow .2s, transform .2s;
+      cursor: default;
+    }
+    .event-card:has(a) { cursor: pointer; }
+
+    .event-card:hover {
+      box-shadow: 0 6px 20px rgba(26,23,18,.12);
+      transform: translateY(-2px);
+    }
+    .event-card:hover ~ * .event::before,
+    .event:hover::before {
+      background: var(--crimson);
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    .event-date {
+      font-family: 'Courier Prime', monospace;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .event-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      color: var(--navy);
+    }
+    .event-desc {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* Link styling — whole card becomes clickable via <a> wrapper */
+    .event-card a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+    .event-card a:focus-visible {
+      outline: 2px solid var(--crimson);
+      outline-offset: 4px;
+    }
+    .event-link-hint {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: 'Courier Prime', monospace;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      color: var(--gold);
+      border-bottom: 1px solid currentColor;
+      line-height: 1.2;
+      transition: color .15s;
+    }
+    .event-card a:hover .event-link-hint { color: var(--crimson); }
+
+    /* ─── Footer ─────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 24px 56px;
+      font-family: 'Courier Prime', monospace;
+      font-size: .72rem;
+      letter-spacing: .1em;
+      color: var(--muted);
+      border-top: 1px solid var(--linen);
+    }
+
+    /* ─── Responsive — mobile single column ─────────────────── */
+    @media (max-width: 680px) {
+      .timeline::before { left: 24px; }
+
+      .decade { justify-content: flex-start; margin-left: 24px; }
+
+      .event {
+        grid-template-columns: 48px 1fr;
+        grid-template-rows: auto;
+        margin-left: 0;
+      }
+      .event::before { left: 24px; top: 18px; }
+
+      .event.left .event-card,
+      .event.right .event-card { grid-column: 2; text-align: left; }
+      .event.left .event-blank,
+      .event.right .event-blank { display: none; }
+      .event-connector { display: none; }
+    }
+
+    /* ─── Reduced motion ─────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .event-card, .event::before { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="header-eyebrow">Interaktivní přehled</p>
+  <h1>Historie 20.&nbsp;století</h1>
+  <div class="header-rule"></div>
+  <p class="header-sub">Kliknutím na událost přejdete na Wikipedii</p>
+</header>
+
+<main class="timeline" id="timeline">
+  <!-- Events are rendered from the DATA array below -->
+</main>
+
+<footer>
+  <span>© Historie 20. století</span>
+</footer>
+
+<script>
+  /*
+  ═══════════════════════════════════════════════════════════════
+   PŘIDÁVÁNÍ UDÁLOSTÍ — EDITUJTE POUZE TUTO ČÁST
+  ───────────────────────────────────────────────────────────────
+   Každá událost je objekt se čtyřmi hodnotami:
+     date  – datum nebo rok zobrazený na kartičce (text)
+     title – název události
+     desc  – krátký popis (můžete nechat prázdný: "")
+     link  – odkaz na Wikipedii nebo jiný web
+              (pokud nechcete odkaz, napište null)
+
+   Události MUSÍ být seřazeny od nejstarší po nejnovější.
+   Desetiletí se rozdělí automaticky podle pole "date".
+
+   PŘÍKLAD přidání nové události:
+     { date: "28. října 1918", title: "Vznik Československa", desc: "Vyhlášení samostatného státu.", link: "https://cs.wikipedia.org/wiki/Vznik_%C4%8Ceskoslovenska" },
+
+  ═══════════════════════════════════════════════════════════════
+  */
+
+  const DATA = [
+
+    /* ── 1900s ─────────────────────────────────── */
+    {
+      date: "1900",
+      title: "Přelom století",
+      desc: "Začátek 20. století – éra průmyslové revoluce a koloniálních říší.",
+      link: null
+    },
+    {
+      date: "1903",
+      title: "První motorový let bratří Wrightů",
+      desc: "17. prosince 1903 uskutečnili Orville a Wilbur Wrightovi první řízený motorový let.",
+      link: "https://cs.wikipedia.org/wiki/Orville_Wright"
+    },
+
+    /* ── 1910s ─────────────────────────────────── */
+    {
+      date: "1914",
+      title: "Začátek první světové války",
+      desc: "Atentát na arcivévodu Františka Ferdinanda d'Este v Sarajevu spustil válečný konflikt.",
+      link: "https://cs.wikipedia.org/wiki/První_světová_válka"
+    },
+    {
+      date: "28. října 1918",
+      title: "Vznik Československa",
+      desc: "Vyhlášení samostatného Československa v Praze.",
+      link: "https://cs.wikipedia.org/wiki/Vznik_Československa"
+    },
+
+    /* ── 1920s ─────────────────────────────────── */
+    {
+      date: "1929",
+      title: "Velká hospodářská krize",
+      desc: "Krach na newyorské burze v říjnu 1929 odstartoval celosvětovou hospodářskou krizi.",
+      link: "https://cs.wikipedia.org/wiki/Velká_hospodářská_krize"
+    },
+
+    /* ── 1930s ─────────────────────────────────── */
+    {
+      date: "30. září 1938",
+      title: "Mnichovská dohoda",
+      desc: "Německo, Itálie, Francie a Velká Británie podepsaly dohodu o odstoupení Sudet.",
+      link: "https://cs.wikipedia.org/wiki/Mnichovská_dohoda"
+    },
+    {
+      date: "1939",
+      title: "Začátek druhé světové války",
+      desc: "Německo napadlo Polsko 1. září 1939 a zahájilo tak druhou světovou válku.",
+      link: "https://cs.wikipedia.org/wiki/Druhá_světová_válka"
+    },
+
+    /* ── 1940s ─────────────────────────────────── */
+    {
+      date: "8. května 1945",
+      title: "Konec druhé světové války v Evropě",
+      desc: "Německo podepsalo bezpodmínečnou kapitulaci. Konec války v Evropě.",
+      link: "https://cs.wikipedia.org/wiki/Den_vítězství"
+    },
+
+    /* ── 1950s ─────────────────────────────────── */
+    {
+      date: "1957",
+      title: "Sputnik – start vesmírného věku",
+      desc: "Sovětský svaz vypustil první umělou družici Země – Sputnik 1.",
+      link: "https://cs.wikipedia.org/wiki/Sputnik_1"
+    },
+
+    /* ── 1960s ─────────────────────────────────── */
+    {
+      date: "21. července 1969",
+      title: "Přistání na Měsíci",
+      desc: "Neil Armstrong se stal prvním člověkem, který stanul na povrchu Měsíce.",
+      link: "https://cs.wikipedia.org/wiki/Apollo_11"
+    },
+
+    /* ── 1970s ─────────────────────────────────── */
+    {
+      date: "1975",
+      title: "Konec války ve Vietnamu",
+      desc: "Pád Saigonu ukončil jeden z nejdelších konfliktů studené války.",
+      link: "https://cs.wikipedia.org/wiki/Vietnamská_válka"
+    },
+
+    /* ── 1980s ─────────────────────────────────── */
+    {
+      date: "17. listopadu 1989",
+      title: "Sametová revoluce",
+      desc: "Studentská demonstrace v Praze zahájila pád komunistického režimu v Československu.",
+      link: "https://cs.wikipedia.org/wiki/Sametová_revoluce"
+    },
+
+    /* ── 1990s ─────────────────────────────────── */
+    {
+      date: "1. ledna 1993",
+      title: "Vznik České republiky",
+      desc: "Mírové rozdělení Československa – vznik samostatné České a Slovenské republiky.",
+      link: "https://cs.wikipedia.org/wiki/Zánik_Československa"
+    },
+
+  ]; /* ← nezapomeňte na středník */
+
+
+  /* ═══ Renderer — neměňte níže ════════════════════════════════ */
+
+  function extractDecade(dateStr) {
+    const m = dateStr.match(/\b(1[89]\d)\d\b/);
+    return m ? Math.floor(parseInt(m[1] + '0') / 10) * 10 : null;
+  }
+
+  function decadeLabel(d) {
+    const labels = {
+      1900:'první desetiletí', 1910:'druhé desetiletí', 1920:'třetí desetiletí',
+      1930:'čtvrté desetiletí', 1940:'páté desetiletí', 1950:'šesté desetiletí',
+      1960:'sedmé desetiletí', 1970:'osmé desetiletí', 1980:'deváté desetiletí',
+      1990:'deváté + přelom'
+    };
+    return labels[d] || '';
+  }
+
+  function buildTimeline() {
+    const container = document.getElementById('timeline');
+    let currentDecade = null;
+    let sideIndex = 0;
+
+    DATA.forEach(ev => {
+      const decade = extractDecade(ev.date);
+
+      if (decade !== null && decade !== currentDecade) {
+        currentDecade = decade;
+        const banner = document.createElement('div');
+        banner.className = 'decade';
+        banner.innerHTML = `
+          <div class="decade-inner">
+            <span class="decade-number">${decade}s</span>
+            <span class="decade-label">${decadeLabel(decade)}</span>
+          </div>`;
+        container.appendChild(banner);
+        sideIndex = 0;
+      }
+
+      const side = sideIndex % 2 === 0 ? 'left' : 'right';
+      sideIndex++;
+
+      const linkHint = ev.link ? `<span class="event-link-hint">↗ Otevřít Wikipedii</span>` : '';
+      const inner = `
+        <div class="event-date">${ev.date}</div>
+        <div class="event-title">${ev.title}</div>
+        ${ev.desc ? `<div class="event-desc">${ev.desc}</div>` : ''}
+        ${linkHint}`;
+
+      const cardContent = ev.link
+        ? `<a href="${ev.link}" target="_blank" rel="noopener noreferrer">${inner}</a>`
+        : inner;
+
+      const row = document.createElement('div');
+      row.className = `event ${side}`;
+      row.innerHTML = `
+        <div class="event-connector"></div>
+        <div class="event-card">${cardContent}</div>
+        <div class="event-blank"></div>`;
+
+      container.appendChild(row);
+    });
+  }
+
+  buildTimeline();
+</script>
+
+</body>
+</html>
